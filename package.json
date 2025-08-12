@@ -1,0 +1,21 @@
+{
+  "name": "devlink",
+  "version": "1.0.0",
+  "description": "application where coders can connect and make friends",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev" : "nodemon src/app.js" 
+  },
+  "keywords": [
+    "javascript",
+    "node.js",
+    "express.js",
+    "mongodb"
+  ],
+  "author": "Nishat Arif",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

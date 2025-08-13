@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator  = require('validator');
 
 const userSchema = mongoose.Schema({
     firstName : {
@@ -17,15 +18,31 @@ const userSchema = mongoose.Schema({
         required:true,
         unique:true,
         lowercase: true,
-        trim:true
+        trim:true,
+        validate(value){
+                if(!validator.isEmail(value)){
+                    throw new Error("emailId is not valid")
+                }
+    }
     },
     password : {
         type:String,
-        required:true
+        required:true,
+        validate(value){
+                if(!validator.isStrongPassword(value)){
+                    throw new Error("password is not valid")
+                }
+    }
     },
     photoUrl : {
         type: String,
-        default :"https://www.pngitem.com/middle/TRToRow_default-user-image-png-transparent-png/"
+        default :"https://www.pngitem.com/middle/TRToRow_default-user-image-png-transparent-png/",
+        validate(value){
+                if(!validator.isURL(value)){
+                    throw new Error("photo url is not valid")
+                }
+        }
+
 
     },
     age:{
@@ -43,7 +60,17 @@ const userSchema = mongoose.Schema({
 
     },
     skills:{
-        type:[String]
+        type:[String],
+        validate(value){
+            if(value.length>5){
+                throw new Error('you can not add more than 5 skills')
+            }}
+    }   ,
+    about : {
+        type : String,
+        minLength: 20,
+        maxLength : 500
+
     },
     timestamp :{
         type :Date

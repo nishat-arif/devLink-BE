@@ -1,7 +1,9 @@
 const express = require('express');
+const bcrypt = require("bcrypt");
+
 const {connectdb} = require('./config/database')
 const {User} = require('./model/user');
-const { ReturnDocument } = require('mongodb');
+const {validateSignUpData} = require('./utils/validations');
 
 const app = express(); // creates instance of server and server is up when we run the application
 
@@ -18,14 +20,30 @@ app.use(express.json()) // it will handle all the requests and convert to readab
 // })
 
 app.post('/signup' , async (req,res)=>{
-    const data = req.body; //dynamic data to be added from req body
     try{
-        const user = new User(data); // creating the instance of data with User Model
-        await user.save();          // saving the data to db
-        res.send("data added successfully") // send the response back to user 
+        validateSignUpData(req);
+
+        const { firstName, lastName, emailId, password } = req.body;
+
+        // Encrypt the password
+        const passwordHash = await bcrypt.hash(password, 10);
+        
+        //   Creating a new instance of the User model
+        const user = new User({
+        firstName,
+        lastName,
+        emailId,
+        password: passwordHash,
+        });
+
+
+        // save the data to database
+        const savedUser = await user.save();
+        res.json({ message: "User Added successfully!", data: savedUser });  
+
     }catch(err)
     {
-        res.status(401).send(err.message ? err.message : "something went wrong in post call")
+        res.status(400).send(err.message)
     }
 })
 

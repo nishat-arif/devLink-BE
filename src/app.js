@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const {connectdb} = require('./config/database')
 const {User} = require('./model/user');
 const {validateSignUpData} = require('./utils/validations');
+const {userAuth} = require('./middlewares/userAuth')
 const {JWT_PRIVATE_KEY} = require('./utils/constants')
 
 const app = express(); // creates instance of server and server is up when we run the application
@@ -81,25 +82,11 @@ app.post('/login' , async (req,res)=>{
     }
 })
 
-app.get('/profile' , async (req,res)=>{
+app.get('/profile' , userAuth, async (req,res)=>{
     
     try{
-        console.log("request" , req)
-        const {authToken} = req.cookies;
-        
-
-        if(authToken){
-            const decodeToken = await jwt.verify(authToken ,JWT_PRIVATE_KEY );
-            const {_id} = decodeToken;
-            const user = await User.findById(_id);
-            if(user){
-                res.json({ message: "user profile received successfully!", data: user});
-            }else{
-                throw new Error("user profile not found")
-            }
-        }else{
-            throw new Error("login back to see the user profile")
-        }   
+        const {userProfile} = req;
+        res.json({ message: "user profile received successfully!", data: userProfile});
     }catch(err)
     {
         res.status(401).send(err.message)

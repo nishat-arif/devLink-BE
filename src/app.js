@@ -70,13 +70,27 @@ app.patch('/user/:userId' , async (req,res)=>{
 
     const {userId} = req.params;
     const updatedData = req.body;
-    
+
+    const fieldsAllowedToUpdate = ['firstName' , 'lastName' , 'gender' , 'skills' , 'photoUrl' , 'age' , 'gender', 'skills'];
+
     try{
-        const users = await User.findByIdAndUpdate(userId , updatedData , {returnDocument :'after'})
+
+        const isUpdateAllowed = Object.keys(updatedData).every(k => fieldsAllowedToUpdate.includes(k));
+
+        if(!isUpdateAllowed){   
+            res.status(401).send("update not allowed")
+        }
+
+        if(updatedData?.skills.length>5){
+            throw new Error('you can not add skills more than 5')
+        }
+
+        const users = await User.findByIdAndUpdate(userId , updatedData , {returnDocument :'after',runValidators:true})
+        
         res.send("user updated succesfully : " + users)
     }catch(err)
     {
-        res.status(401).send("can not update user")
+        res.status(401).send("can not update user : " + err.message)
     }
 })
 

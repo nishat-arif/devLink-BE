@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator  = require('validator');
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     firstName : {
         type:String,
         required:true,
@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
         trim:true,
         validate(value){
                 if(!validator.isEmail(value)){
-                    throw new Error("emailId is not valid")
+                    throw new Error("emailId is not valid......")
                 }
     }
     },
@@ -30,7 +30,7 @@ const userSchema = mongoose.Schema({
         required:true,
         validate(value){
                 if(!validator.isStrongPassword(value)){
-                    throw new Error("password is not valid")
+                    throw new Error("password is not valid....")
                 }
     }
     },
@@ -39,7 +39,7 @@ const userSchema = mongoose.Schema({
         default :"https://www.pngitem.com/middle/TRToRow_default-user-image-png-transparent-png/",
         validate(value){
                 if(!validator.isURL(value)){
-                    throw new Error("photo url is not valid")
+                    throw new Error("photo url is not valid...")
                 }
         }
 
@@ -54,7 +54,7 @@ const userSchema = mongoose.Schema({
         type:String,
         validate(value){
             if(!["male" , "female" , "others"].includes(value)){
-                throw new Error("gender data is not valid")
+                throw new Error("gender data is not valid....")
             }
         }
 

@@ -39,8 +39,34 @@ app.post('/signup' , async (req,res)=>{
 
         // save the data to database
         const savedUser = await user.save();
+
+        console.log("saved" , savedUser)
         res.json({ message: "User Added successfully!", data: savedUser });  
 
+    }catch(err)
+    {
+        res.status(400).send(err.message)
+    }
+})
+
+app.post('/login' , async (req,res)=>{
+    try{
+       
+        const {emailId , password} = req.body;
+
+        const userData = await User.findOne({emailId : emailId}) //get userData as per the req which contains passwordHash
+
+        if(!userData){
+            throw new Error("Invalid user credentials")
+        }else{
+            const isPasswordValid = await bcrypt.compare(password ,userData.password )
+
+            if(isPasswordValid){
+                res.json({ message: "User logged in successfully!", data: userData });
+            }else{
+                throw new Error("Invalid user credentials")
+            }
+        }
     }catch(err)
     {
         res.status(400).send(err.message)
@@ -89,7 +115,7 @@ app.patch('/user/:userId' , async (req,res)=>{
     const {userId} = req.params;
     const updatedData = req.body;
 
-    const fieldsAllowedToUpdate = ['firstName' , 'lastName' , 'gender' , 'skills' , 'photoUrl' , 'age' , 'gender', 'skills'];
+    const fieldsAllowedToUpdate = ['firstName' , 'lastName' , 'gender' , 'skills' , 'photoUrl' , 'age' , 'gender'];
 
     try{
 

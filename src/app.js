@@ -93,6 +93,25 @@ app.get('/profile' , userAuth, async (req,res)=>{
     }
 })
 
+app.post('/sendConnectionRequest/:id' , userAuth, async (req,res)=>{
+    
+    try{
+        const {id} = req.params;
+        const {userProfile} = req;
+
+    
+
+        const connectionProfile = await User.findById(id)
+        console.log("connectionProfile",connectionProfile )
+        
+
+        res.json({ message: "connection request send successfully" , fromProfile: userProfile , toProfile: connectionProfile});
+    }catch(err)
+    {
+        res.status(401).send(err.message)
+    }
+})
+
 app.get('/feed' , async (req,res)=>{
     
     try{

@@ -7,7 +7,6 @@ const requestRouter = express.Router();
 
 requestRouter.post('/request/send/:status/:toUserId' , userAuth, async (req,res)=>{   
     try{
-        const showUserData = "firstName lastName age gender photoUrl skills about";
         const {status , toUserId} = req.params;
         const {userProfile} = req;
         const fromUserId =  userProfile._id
@@ -43,6 +42,38 @@ requestRouter.post('/request/send/:status/:toUserId' , userAuth, async (req,res)
       await connectionRequest.save();
 
       res.json({ message: toUser.firstName +" profile " + status +" by " + userProfile.firstName , data: connectionRequest});
+
+    }catch(err)
+        {
+        res.status(401).send(err.message)
+        }
+})
+
+requestRouter.post('/request/review/:status/:requestId' , userAuth, async (req,res)=>{   
+    try{
+        const {status , requestId} = req.params;
+        const {userProfile} = req;
+
+
+        const validStatus = ["accepted" , "rejected"];
+        if(!validStatus.includes(status)){
+            throw new Error("status is not valid in the request")
+        }
+
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id: requestId,
+            toUserId : userProfile._id,
+            status : "interested"
+        });
+
+        if(!connectionRequest){
+            throw new Error("connection request does not exits");
+        }
+
+        connectionRequest.status = status;
+        const data = await connectionRequest.save();
+
+      res.json({ message: "connection request is " + status , data});
 
     }catch(err)
         {

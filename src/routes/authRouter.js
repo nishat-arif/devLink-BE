@@ -1,0 +1,70 @@
+const express = require('express');
+const authRouter = express.Router(); //creates authRouter
+
+
+const {User} = require('../model/user');
+const {validateSignUpData} = require('../utils/validations');
+const bcrypt = require("bcrypt");
+
+authRouter.post('/signup' , async (req,res)=>{
+    try{
+        validateSignUpData(req);
+
+        const { firstName, lastName, emailId, password } = req.body;
+
+        // Encrypt the password
+        const passwordHash = await bcrypt.hash(password, 10);
+        
+        //   Creating a new instance of the User model
+        const user = new User({
+        firstName,
+        lastName,
+        emailId,
+        password: passwordHash,
+        });
+
+
+        // save the data to database
+        const savedUser = await user.save();
+        res.json({ message: "User Added successfully!", data: savedUser });  
+
+    }catch(err)
+    {
+        res.status(400).send(err.message)
+    }
+})
+
+authRouter.post('/login' , async (req,res)=>{
+    try{
+       
+        const {emailId , password} = req.body;
+
+        const userData = await User.findOne({emailId : emailId}) //get userData as per the req which contains passwordHash
+
+        if(!userData){
+            throw new Error("Invalid user credentials")
+        }else{
+            const isPasswordValid = await userData.validatePassword(password , userData.password)
+
+            if(isPasswordValid){
+                const token = await userData.getJWT();
+  
+                res.cookie('authToken' , token) , { expires: new Date(Date.now() + 9000000)};
+                res.json({ message: "User logged in successfully!", data: userData });
+            }else{
+                throw new Error("Invalid user credentials")
+            }
+        }
+    }catch(err)
+    {
+        res.status(400).send(err.message)
+    }
+})
+
+authRouter.post('/logout' , async (req,res)=>{
+    
+    res.cookie('authToken' , {}) , { expires: new Date(Date.now())};
+    res.json({ message: "User logged out successfully!"});  
+})
+
+module.exports = authRouter;

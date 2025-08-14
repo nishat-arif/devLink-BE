@@ -4,7 +4,8 @@ const {connectdb} = require('./config/database')
 const {User} = require('./model/user');
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
-const requestRouter = require("./routes/request")
+const requestRouter = require("./routes/request");
+const userRouter = require('./routes/user');
 
 const app = express(); // creates instance of server and server is up when we run the application
 
@@ -12,8 +13,10 @@ app.use(express.json()) // it will handle all the requests and convert to readab
 app.use(cookieParser()); // parses the cookie to make it readable 
 
 app.use("/", authRouter);
-app.use("/", profileRouter);
+app.use("/", userRouter);
 app.use("/", requestRouter);
+app.use("/", profileRouter);
+
 
 app.get('/feed' , async (req,res)=>{
     

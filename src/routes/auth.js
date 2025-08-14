@@ -42,9 +42,10 @@ authRouter.post('/login' , async (req,res)=>{
         const userData = await User.findOne({emailId : emailId}) //get userData as per the req which contains passwordHash
 
         if(!userData){
-            throw new Error("Invalid user credentials")
+            throw new Error("Invalid user credentials:email")
         }else{
-            const isPasswordValid = await userData.validatePassword(password , userData.password)
+            const isPasswordValid = await userData.validatePassword(password)
+            
 
             if(isPasswordValid){
                 const token = await userData.getJWT();
@@ -52,7 +53,7 @@ authRouter.post('/login' , async (req,res)=>{
                 res.cookie('authToken' , token) , { expires: new Date(Date.now() + 9000000)};
                 res.json({ message: "User logged in successfully!", data: userData });
             }else{
-                throw new Error("Invalid user credentials")
+                throw new Error("Invalid user credentials:password")
             }
         }
     }catch(err)

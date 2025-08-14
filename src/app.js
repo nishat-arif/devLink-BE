@@ -2,31 +2,18 @@ const express = require('express');
 const cookieParser = require('cookie-parser')
 const {connectdb} = require('./config/database')
 const {User} = require('./model/user');
-const {userAuth} = require('./middlewares/userAuth')
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request")
 
 const app = express(); // creates instance of server and server is up when we run the application
-
 
 app.use(express.json()) // it will handle all the requests and convert to readable format
 app.use(cookieParser()); // parses the cookie to make it readable 
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
-
-app.post('/sendConnectionRequest/:id' , userAuth, async (req,res)=>{
-    
-    try{
-        const {id} = req.params;
-        const {userProfile} = req;
-        const connectionProfile = await User.findById(id)
-        res.json({ message: "connection request send successfully" , fromProfile: userProfile , toProfile: connectionProfile});
-    }catch(err)
-        {
-        res.status(401).send(err.message)
-        }
-})
+app.use("/", requestRouter);
 
 app.get('/feed' , async (req,res)=>{
     

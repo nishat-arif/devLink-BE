@@ -9,6 +9,7 @@ const {validateSignUpData} = require('./utils/validations');
 const {userAuth} = require('./middlewares/userAuth')
 const {JWT_PRIVATE_KEY} = require('./utils/constants')
 
+
 const app = express(); // creates instance of server and server is up when we run the application
 
 
@@ -65,10 +66,10 @@ app.post('/login' , async (req,res)=>{
         if(!userData){
             throw new Error("Invalid user credentials")
         }else{
-            const isPasswordValid = await bcrypt.compare(password ,userData.password )
+            const isPasswordValid = await userData.validatePassword(password , userData.password)
 
             if(isPasswordValid){
-                const token = await jwt.sign({ _id: userData._id }, JWT_PRIVATE_KEY, {expiresIn: "7d",}); // creates jwt token
+                const token = await userData.getJWT();
   
                 res.cookie('authToken' , token) , { expires: new Date(Date.now() + 9000000)};
                 res.json({ message: "User logged in successfully!", data: userData });

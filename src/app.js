@@ -17,18 +17,6 @@ app.use("/", userRouter);
 app.use("/", requestRouter);
 app.use("/", profileRouter);
 
-
-app.get('/feed' , async (req,res)=>{
-    
-    try{
-        const users = await User.find({})
-        res.json({ message: "all users send successfully" , data :users});
-    }catch(err)
-    {
-        res.status(401).send(err.message)
-    }
-})
-
 connectdb().
 then(()=>{
     app.listen(3000 , ()=>{console.log("server is listening to port 3000")})

@@ -41,7 +41,7 @@ requestRouter.post('/request/send/:status/:toUserId' , userAuth, async (req,res)
 
       await connectionRequest.save();
 
-      res.json({ message: toUser.firstName +" profile " + status +" by " + userProfile.firstName , data: connectionRequest});
+      res.json({ message: toUser.firstName +" profile is " + status +" by " + userProfile.firstName , data: connectionRequest});
 
     }catch(err)
         {
@@ -73,7 +73,7 @@ requestRouter.post('/request/review/:status/:requestId' , userAuth, async (req,r
         connectionRequest.status = status;
         const data = await connectionRequest.save();
 
-      res.json({ message: "connection request is " + status , data});
+      res.json({ message: "connection request is " + status + " for", data});
 
     }catch(err)
         {

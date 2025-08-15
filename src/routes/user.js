@@ -4,12 +4,12 @@ const {userAuth} = require('../middlewares/userAuth');
 const {User} = require('../model/user');
 const ConnectionRequest = require('../model/connectionRequest')
 
+const showData = "firstName lastName age gender photoUrl skills about"
+
 userRouter.get('/users/requests/received' , userAuth , async (req,res)=>{
     
     try{
        const  loggedInUser = req.userProfile;
-
-       const showData = "firstName lastName age gender photoUrl skills about"
 
        const connectionRequests = await ConnectionRequest.find({
                                                         toUserId: loggedInUser._id,
@@ -32,8 +32,6 @@ userRouter.get('/users/connections' , userAuth , async (req,res)=>{
     try{
        const  loggedInUser = req.userProfile;
 
-       const showData = "firstName lastName age gender photoUrl skills about"
-
        const connectionRequests = await ConnectionRequest.find(
                                    {$or : [{toUserId: loggedInUser._id, status: "accepted"},
                                             {fromUserId: loggedInUser._id, status: "accepted"}
@@ -54,6 +52,45 @@ userRouter.get('/users/connections' , userAuth , async (req,res)=>{
             });
         res.json({message: "getting all your connections: ", data});
     }
+        
+    }catch(err)
+    {
+        res.status(401).send(err.message)
+    }
+})
+
+userRouter.get('/feed' , userAuth , async (req,res)=>{
+    
+    try{
+       const  loggedInUser = req.userProfile;
+
+       const page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 10;
+        limit = limit > 50 ? 50 : limit;
+        const skip = (page - 1) * limit;
+
+        const connectionRequests = await ConnectionRequest.find({
+                                    $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+                                    }).select("fromUserId  toUserId");
+
+        const hideUsersFromFeed = new Set();
+
+        connectionRequests.forEach((req) => {
+                            hideUsersFromFeed.add(req.fromUserId.toString());
+                            hideUsersFromFeed.add(req.toUserId.toString());
+                            });
+
+        const users = await User.find({
+                        $and: [
+                            { _id: { $nin: Array.from(hideUsersFromFeed) } },
+                            { _id: { $ne: loggedInUser._id } },
+                        ],
+                        })
+                        .select(showData)
+                        .skip(skip)
+                        .limit(limit);
+
+                        res.json({message: "getting all the users on your feed : ", data : users});
         
     }catch(err)
     {

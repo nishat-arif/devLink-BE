@@ -8,7 +8,7 @@ const profileRouter = express.Router();
 profileRouter.get('/profile/view' , userAuth, async (req,res)=>{ 
     try{
         const {userProfile} = req;
-        res.json({ message: "user profile received successfully!", data: userProfile});
+        res.json({ message: "user profile fetched successfully!", data: userProfile});
     }catch(err)
     {
         res.status(401).send(err.message)
@@ -27,7 +27,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     await loggedInUser.save();
 
     res.json({
-      message: `${loggedInUser.firstName}, your profile updated successfuly`,
+      message: `${loggedInUser.firstName}, your profile is updated successfuly`,
       data: loggedInUser,
     });
   } catch (err) {
@@ -49,7 +49,7 @@ profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     await loggedInUser.save();
 
     res.json({
-      message: `${loggedInUser.firstName}, your profile password updated successfuly`,
+      message: `${loggedInUser.firstName}, your profile password updated successfully`,
       data: loggedInUser,
     });
   } catch (err) {

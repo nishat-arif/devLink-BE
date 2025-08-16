@@ -49,9 +49,12 @@ authRouter.post('/login' , async (req,res)=>{
 
             if(isPasswordValid){
                 const token = await userData.getJWT();
-  
+
+                const {firstName ,lastName, emailId ,age ,gender, photoUrl ,skills ,about} = userData;
+                const loggedInData =  {firstName ,lastName, emailId ,age ,gender, photoUrl ,skills ,about}
+
                 res.cookie('authToken' , token) , { expires: new Date(Date.now() + 9000000)};
-                res.json({ message: "User logged in successfully!", data: userData });
+                res.json({ message: firstName + " has logged in successfully!", data: loggedInData });
             }else{
                 throw new Error("Invalid user credentials:password")
             }

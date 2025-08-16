@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl : {
         type: String,
-        default :"https://www.pngitem.com/middle/TRToRow_default-user-image-png-transparent-png/",
+        default :"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0sUsrGbaqX4qT954jnbDXUyWS-YLKltxyEJ15yCaibXwtTgtVk67nWdc&s",
         validate(value){
                 if(!validator.isURL(value)){
                     throw new Error("photo url is not valid...")

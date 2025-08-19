@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl : {
         type: String,
-        default :"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0sUsrGbaqX4qT954jnbDXUyWS-YLKltxyEJ15yCaibXwtTgtVk67nWdc&s",
+        default :"https://geographyandyou.com/images/user-profile.png",
         validate(value){
                 if(!validator.isURL(value)){
                     throw new Error("photo url is not valid...")
@@ -57,11 +57,15 @@ const userSchema = new mongoose.Schema({
     },
     gender:{
         type:String,
-        validate(value){
-            if(!["male" , "female" , "others"].includes(value)){
-                throw new Error("gender data is not valid....")
-            }
-        }
+        enum: {
+        values: ["male", "female", "other"],
+        message: `{VALUE} is not a valid gender type`,
+      },
+      // validate(value) {
+      //   if (!["male", "female", "others"].includes(value)) {
+      //     throw new Error("Gender data is not valid");
+      //   }
+      // },
 
     },
     skills:{

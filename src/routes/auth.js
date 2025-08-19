@@ -26,6 +26,8 @@ authRouter.post('/signup' , async (req,res)=>{
 
         // save the data to database
         const savedUser = await user.save();
+        const token = await savedUser.getJWT();//creating token so when user signsup from client side , he gets logged in automatially  
+        res.cookie('authToken' , token, { expires: new Date(Date.now() + 9000000)});
         res.json({ message: "User Added successfully!", data: savedUser });  
 
     }catch(err)
@@ -53,7 +55,7 @@ authRouter.post('/login' , async (req,res)=>{
                 const {firstName ,lastName, emailId ,age ,gender, photoUrl ,skills ,about} = userData;
                 const loggedInData =  {firstName ,lastName, emailId ,age ,gender, photoUrl ,skills ,about}
 
-                res.cookie('authToken' , token) , { expires: new Date(Date.now() + 9000000)};
+                res.cookie('authToken' , token, { expires: new Date(Date.now() + 9000000)});
                 res.json({ message: firstName + " has logged in successfully!", data: loggedInData });
             }else{
                 throw new Error("Invalid user credentials:password")
@@ -67,7 +69,8 @@ authRouter.post('/login' , async (req,res)=>{
 
 authRouter.post('/logout' , async (req,res)=>{
     
-    res.cookie('authToken' , {}) , { expires: new Date(Date.now())};
+    // res.cookie('authToken' , null , {expires: new Date(0)});
+    res.clearCookie('authToken'); // Clears the cookie named 'authToken'
     res.json({ message: "User logged out successfully!"});  
 })
 

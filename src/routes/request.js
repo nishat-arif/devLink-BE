@@ -5,6 +5,8 @@ const ConnectionRequest = require('../model/connectionRequest')
 
 const requestRouter = express.Router();
 
+const showData = "firstName lastName age gender photoUrl skills about"
+
 requestRouter.post('/request/send/:status/:toUserId' , userAuth, async (req,res)=>{   
     try{
         const {status , toUserId} = req.params;
@@ -64,7 +66,8 @@ requestRouter.post('/request/review/:status/:requestId' , userAuth, async (req,r
             _id: requestId,
             toUserId : userProfile._id,
             status : "interested"
-        });
+        })
+        .populate("fromUserId" ,showData)
 
         if(!connectionRequest){
             throw new Error("connection request does not exits");

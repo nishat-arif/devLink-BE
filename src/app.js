@@ -31,7 +31,8 @@ app.use("/", profileRouter);
 
 connectdb().
 then(()=>{
-    app.listen(3000 , ()=>{console.log("server is listening to port 3000")})
+    console.log("database connection established successfully....")
+    app.listen(3000 , ()=>{console.log("server is listening to port 3000...")})
 })
 
 

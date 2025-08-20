@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const validator  = require('validator');
-const {JWT_PRIVATE_KEY} = require('../utils/constants')
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
+const {JWT_PRIVATE_KEY} = require('../utils/constants')
+
 
 
 const userSchema = new mongoose.Schema({
@@ -40,7 +41,7 @@ const userSchema = new mongoose.Schema({
     },
     photoUrl : {
         type: String,
-        default :"https://www.pngitem.com/middle/TRToRow_default-user-image-png-transparent-png/",
+        default :"https://geographyandyou.com/images/user-profile.png",
         validate(value){
                 if(!validator.isURL(value)){
                     throw new Error("photo url is not valid...")
@@ -56,11 +57,15 @@ const userSchema = new mongoose.Schema({
     },
     gender:{
         type:String,
-        validate(value){
-            if(!["male" , "female" , "others"].includes(value)){
-                throw new Error("gender data is not valid....")
-            }
-        }
+        enum: {
+        values: ["male", "female", "other"],
+        message: `{VALUE} is not a valid gender type`,
+      },
+      // validate(value) {
+      //   if (!["male", "female", "others"].includes(value)) {
+      //     throw new Error("Gender data is not valid");
+      //   }
+      // },
 
     },
     skills:{
@@ -89,7 +94,7 @@ userSchema.methods.getJWT = async function () {
   return token;
 };
 
-userSchema.methods.validatePassword = async function (passwordInputByUser) {
+userSchema.methods.validatePassword = async function(passwordInputByUser) {
   const user = this;
   const passwordHash = user.password;
 

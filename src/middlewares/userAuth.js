@@ -19,7 +19,7 @@ const userAuth = async(req,res,next)=>{
                 throw new Error("user profile not found")
             }
         }else{
-            throw new Error("login back to see the user profile")
+            return res.status(401).send("Please Login !!")
         }   
 
     }catch(err){

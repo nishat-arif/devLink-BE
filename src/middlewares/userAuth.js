@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const {User} = require("../model/user")
-const {JWT_PRIVATE_KEY} = require("../utils/constants")
 
 const userAuth = async(req,res,next)=>{
 
@@ -9,7 +8,7 @@ const userAuth = async(req,res,next)=>{
         const {authToken} = req.cookies;
 
         if(authToken){
-            const decodeToken = await jwt.verify(authToken ,JWT_PRIVATE_KEY );
+            const decodeToken = await jwt.verify(authToken ,process.env.JWT_PRIVATE_KEY );
             const {_id} = decodeToken;
             const userProfile = await User.findById(_id);
             if(userProfile){

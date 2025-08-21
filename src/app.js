@@ -13,6 +13,9 @@ const {BROWSER_DOMAIN_URL} = require('../src/utils/constants')
 
 const app = express(); // creates instance of server and server is up when we run the application
 
+// to run the cronjob as soon as application starts
+require("./utils/cronjob");
+
 //to fix cors issue between backend apis and webapi , make cors call as below :
 
 //we need to whitelist our web domain url here while fixing cors issue if we are making "axios" call from web api , otherwise cookies will not be set in browser

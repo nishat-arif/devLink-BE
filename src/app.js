@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require('express');
 const cookieParser = require('cookie-parser')
 const {connectdb} = require('./config/database')
@@ -32,7 +34,7 @@ app.use("/", profileRouter);
 connectdb().
 then(()=>{
     console.log("database connection established successfully....")
-    app.listen(3000 , ()=>{console.log("server is listening to port 3000...")})
+    app.listen(process.env.PORT , ()=>{console.log("server is listening to port 3000...")})
 })
 
 

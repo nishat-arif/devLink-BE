@@ -1,14 +1,31 @@
 const express = require('express');
 const bcrypt = require("bcrypt");
 const {userAuth} = require('../middlewares/userAuth')
-const {validateEditProfileData} = require('../utils/validations')
+const {validateEditProfileData} = require('../utils/validations');
+const { User } = require('../model/user');
 
 const profileRouter = express.Router();
+
+const showData = "_id firstName lastName age gender photoUrl skills about"
 
 profileRouter.get('/profile/view' , userAuth, async (req,res)=>{ 
     try{
         const {userProfile} = req;
         res.json({ message: "user profile fetched successfully!", data: userProfile});
+    }catch(err)
+    {
+        res.status(401).send(err.message)
+    }
+})
+
+profileRouter.get('/profile/view/:id' , userAuth, async (req,res)=>{ 
+    try{
+        const {userProfile} = req;
+        const {id} = req.params;
+
+        const loggedInUserProfile = userProfile
+        const otherUserProfile = await User.findById({_id:id}).select(showData)
+        res.json({ message: "user profile fetched successfully!", data: otherUserProfile});
     }catch(err)
     {
         res.status(401).send(err.message)

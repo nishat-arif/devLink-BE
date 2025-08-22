@@ -4,7 +4,7 @@ const sendEmail = require("./sendEmail");
 const ConnectionRequest = require("../model/connectionRequest");
 
 // This job will run at 12:20 pm in the morning everyday
-cron.schedule("20 12 * * *", async () => {
+cron.schedule("0 0 7 * *", async () => {
   // Send emails to all people who got requests the previous day
   try {
     const yesterday = subDays(new Date(), 1);
@@ -32,7 +32,7 @@ cron.schedule("20 12 * * *", async () => {
       try {
         const res = await sendEmail.run(
           "New Friend Requests are pending for " + email,
-          "There are so many friend reuests pending, please login to devlink.com and accept or reject the requests."
+          "There are so many friend reuests pending, please login to atdevlink.com and accept or reject the requests."
         );
 
       } catch (err) {

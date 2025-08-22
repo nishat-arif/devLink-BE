@@ -1,5 +1,4 @@
 require("dotenv").config();
-
 const express = require('express');
 const cookieParser = require('cookie-parser')
 const {connectdb} = require('./config/database')
@@ -10,8 +9,14 @@ const requestRouter = require("./routes/request");
 const userRouter = require('./routes/user');
 const cors = require('cors')
 const {BROWSER_DOMAIN_URL} = require('../src/utils/constants')
+const http = require("http");
+const {initializeSocket} = require('../src/utils/socket.js')
+
+
 
 const app = express(); // creates instance of server and server is up when we run the application
+
+const httpserver = http.createServer(app)
 
 // to run the cronjob as soon as application starts
 require("./utils/cronjob");
@@ -34,10 +39,13 @@ app.use("/", userRouter);
 app.use("/", requestRouter);
 app.use("/", profileRouter);
 
+initializeSocket(httpserver);
+
 connectdb().
 then(()=>{
     console.log("database connection established successfully....")
-    app.listen(process.env.PORT , ()=>{console.log("server is listening to port 3000...")})
+    //app.listen(process.env.PORT , ()=>{console.log("server is listening to port 3000...")})
+    httpserver.listen(process.env.PORT , ()=>{console.log("server is listening to port 3000...")})
 })
 
 

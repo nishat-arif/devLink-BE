@@ -59,6 +59,29 @@ userRouter.get('/users/connections' , userAuth , async (req,res)=>{
     }
 })
 
+userRouter.post('/users/removeconnection' , userAuth , async (req,res)=>{
+    
+    try{
+        const {_id}  = req.body
+       const  loggedInUser = req.userProfile;
+
+       const removedConnection = await ConnectionRequest.findOneAndDelete(
+                                   {$or : [{toUserId: _id, fromUserId: loggedInUser._id ,status: "accepted" },
+                                            {fromUserId: _id, toUserId: loggedInUser._id, status: "accepted"}
+                                            ]
+                                    }).populate("fromUserId" ,showData)
+                                    .populate("toUserId" ,showData);
+
+
+        res.json({message: "connection is removed:  ", removedConnection});
+
+        
+    }catch(err)
+    {
+        res.status(401).send(err.message)
+    }
+})
+
 userRouter.get('/feed' , userAuth , async (req,res)=>{
     
     try{

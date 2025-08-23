@@ -11,12 +11,11 @@ const cors = require('cors')
 const {BROWSER_DOMAIN_URL} = require('../src/utils/constants')
 const http = require("http");
 const {initializeSocket} = require('../src/utils/socket.js')
+const chatRouter = require("./routes/chat");
 
 
 
 const app = express(); // creates instance of server and server is up when we run the application
-
-const httpserver = http.createServer(app)
 
 // to run the cronjob as soon as application starts
 require("./utils/cronjob");
@@ -38,7 +37,9 @@ app.use("/", authRouter);
 app.use("/", userRouter);
 app.use("/", requestRouter);
 app.use("/", profileRouter);
+app.use("/", chatRouter);
 
+const httpserver = http.createServer(app)
 initializeSocket(httpserver);
 
 connectdb().

@@ -80,7 +80,14 @@ const userSchema = new mongoose.Schema(
             minLength: 20,
             maxLength : 500
 
-        }
+        },
+         isPremium: {
+                type: Boolean,
+                default: false,
+        },
+        membershipType: {
+                type: String,
+        },
     },
     {
         timestamps : true

@@ -1,5 +1,4 @@
 require("dotenv").config();
-
 const express = require('express');
 const cookieParser = require('cookie-parser')
 const {connectdb} = require('./config/database')
@@ -10,6 +9,12 @@ const requestRouter = require("./routes/request");
 const userRouter = require('./routes/user');
 const cors = require('cors')
 const {BROWSER_DOMAIN_URL} = require('../src/utils/constants')
+const http = require("http");
+const {initializeSocket} = require('../src/utils/socket.js')
+const chatRouter = require("./routes/chat");
+const paymentRouter = require("./routes/payment.js");
+
+
 
 const app = express(); // creates instance of server and server is up when we run the application
 
@@ -33,11 +38,17 @@ app.use("/", authRouter);
 app.use("/", userRouter);
 app.use("/", requestRouter);
 app.use("/", profileRouter);
+app.use("/", chatRouter);
+app.use("/", paymentRouter);
+
+const httpserver = http.createServer(app)
+initializeSocket(httpserver);
 
 connectdb().
 then(()=>{
     console.log("database connection established successfully....")
-    app.listen(process.env.PORT , ()=>{console.log("server is listening to port 3000...")})
+    //app.listen(process.env.PORT , ()=>{console.log("server is listening to port 3000...")})
+    httpserver.listen(process.env.PORT , ()=>{console.log("server is listening to port 3000...")})
 })
 
 

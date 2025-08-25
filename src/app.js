@@ -12,6 +12,7 @@ const {BROWSER_DOMAIN_URL} = require('../src/utils/constants')
 const http = require("http");
 const {initializeSocket} = require('../src/utils/socket.js')
 const chatRouter = require("./routes/chat");
+const paymentRouter = require("./routes/payment.js");
 
 
 
@@ -38,6 +39,7 @@ app.use("/", userRouter);
 app.use("/", requestRouter);
 app.use("/", profileRouter);
 app.use("/", chatRouter);
+app.use("/", paymentRouter);
 
 const httpserver = http.createServer(app)
 initializeSocket(httpserver);

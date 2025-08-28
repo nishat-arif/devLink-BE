@@ -13,6 +13,7 @@ const http = require("http");
 const {initializeSocket} = require('../src/utils/socket.js')
 const chatRouter = require("./routes/chat");
 const paymentRouter = require("./routes/payment.js");
+const openAiRouter = require("./routes/openai.js")
 
 
 
@@ -40,6 +41,7 @@ app.use("/", requestRouter);
 app.use("/", profileRouter);
 app.use("/", chatRouter);
 app.use("/", paymentRouter);
+app.use("/" , openAiRouter);
 
 const httpserver = http.createServer(app)
 initializeSocket(httpserver);

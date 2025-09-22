@@ -75,6 +75,13 @@ const userSchema = new mongoose.Schema(
                     throw new Error('you can not add more than 5 skills')
                 }}
         }   ,
+        hobbies:{
+            type:[String],
+            validate(value){
+                if(value.length>5){
+                    throw new Error('you can not add more than 5 hobbies')
+                }}
+        }   ,
         about : {
             type : String,
             minLength: 20,

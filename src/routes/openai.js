@@ -5,7 +5,7 @@ const openAiRouter = express.Router(); //creates authRouter
 const { OpenAI } = require('openai'); // OpenAI SDK v4+
 
 
-// Initialize OpenAI client
+// Initialize OpenAI client ...
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
